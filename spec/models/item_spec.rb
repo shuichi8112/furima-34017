@@ -35,6 +35,11 @@ RSpec.describe Item, type: :model do
         @item.valid?
         expect(@item.errors.full_messages).to include("Category can't be blank")
       end
+      it 'カテゴリーが1以外でないと登録できない' do
+        @item.category_id = 1
+        @item.valid?
+        expect(@item.errors.full_messages).to include("Category Select")
+      end
 
       it '商品の状態が空では登録できない' do
         @item.status_id = ''
@@ -42,10 +47,23 @@ RSpec.describe Item, type: :model do
         expect(@item.errors.full_messages).to include("Status can't be blank")
       end
 
+      it '商品の状態が1以外でないと登録できない' do
+        @item.status_id = 1
+        @item.valid?
+        expect(@item.errors.full_messages).to include("Status Select")
+      end
+
+
       it '配送料の負担が空では登録できない' do
         @item.shipping_charge_id = ''
         @item.valid?
         expect(@item.errors.full_messages).to include("Shipping charge can't be blank")
+      end
+
+      it '配送料の負担が1以外でないと登録できない' do
+        @item.shipping_charge_id = 1
+        @item.valid?
+        expect(@item.errors.full_messages).to include("Shipping charge Select")
       end
 
       it '発送元の地域が空では登録できない' do
@@ -53,12 +71,23 @@ RSpec.describe Item, type: :model do
         @item.valid?
         expect(@item.errors.full_messages).to include("Prefecture can't be blank")
       end
+      it '発送元の地域が1以外でないと登録できない' do
+        @item.prefecture_id = 1
+        @item.valid?
+        expect(@item.errors.full_messages).to include("Prefecture Select")
+      end
 
       it '配送までの日数が空では登録できない' do
         @item.shipping_day_id = ''
         @item.valid?
         expect(@item.errors.full_messages).to include("Shipping day can't be blank")
       end
+      it '配送までの日数が1以外でないと登録できない' do
+        @item.shipping_day_id = 1
+        @item.valid?
+        expect(@item.errors.full_messages).to include("Shipping day Select")
+      end
+
       
       it '販売価格が空では登録できない' do
         @item.price = ''
@@ -69,19 +98,31 @@ RSpec.describe Item, type: :model do
       it '販売価格が299円以下では登録できない' do
         @item.price = 299
         @item.valid?
-        expect(@item.errors.full_messages).to include("Price must be greater than or equal to 300")
+        expect(@item.errors.full_messages).to include("Price Out of setting range")
       end
 
       it '販売価格が10,000,000円以下では登録できない' do
         @item.price = 10000000
         @item.valid?
-        expect(@item.errors.full_messages).to include("Price must be less than or equal to 9999999")
+        expect(@item.errors.full_messages).to include("Price Out of setting range")
       end
 
       it '販売価格が全角では登録できない' do
         @item.price = "５００"
         @item.valid?
-        expect(@item.errors.full_messages).to include("Price is not a number")
+        expect(@item.errors.full_messages).to include("Price Out of setting range")
+      end
+
+      it '販売価格が半角英数混合では登録できない' do
+        @item.price = "1a1a1a1a"
+        @item.valid?
+        expect(@item.errors.full_messages).to include("Price Out of setting range")
+      end
+
+      it '販売価格が半角英語では登録できない' do
+        @item.price = "aaaaa"
+        @item.valid?
+        expect(@item.errors.full_messages).to include("Price Out of setting range")
       end
       
       it 'userが紐付いていないと保存できないこと' do
