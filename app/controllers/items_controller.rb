@@ -1,10 +1,9 @@
 class ItemsController < ApplicationController
-  before_action :authenticate_user!, only: [ :new, create]
+  before_action :authenticate_user!, only: [ :new, :create]
 
-  # def index
-  #   @items = Item.all
-  # end
-  #一覧機能実装時使用
+  def index
+    @items = Item.all
+  end
 
   def new
     @item = Item.new
